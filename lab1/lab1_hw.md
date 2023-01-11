@@ -1,7 +1,7 @@
 ---
 title: "Lab 1 Homework"
-author: "Please Add Your Name Here"
-date: "2023-01-04"
+author: "Ayana Carpenter"
+date: "2023-01-10"
 output:
   html_document: 
     theme: spacelab
@@ -23,7 +23,47 @@ Make sure to use the formatting conventions of RMarkdown to make your report nea
   + 5 - 3 * 2  
   + 8 / 2 ** 2  
   
+
+```r
+  + 5 - 3 * 2  
+```
+
+```
+## [1] -1
+```
+  
+
+```r
++ 8 / 2 ** 2 
+```
+
+```
+## [1] 2
+```
+  
+  
+  
 **5. Did any of the results in #4 surprise you? Write two programs that calculate each expression such that the result for the first example is 4 and the second example is 16.**    
+
+
+```r
+(+ 5 - 3) * 2
+```
+
+```
+## [1] 4
+```
+
+
+```r
+(+ 8 / 2) ** 2
+```
+
+```
+## [1] 16
+```
+
+
 
 **6. `Objects` in R are a way in which we can store data or operations. We will talk more about objects next week. For now, make a new object `pi` as 3.14159265359 by running the following code chunk. You should now see the object `pi` in the environment window in the top right.**  
 
@@ -32,6 +72,16 @@ pi <- 3.14159265359
 ```
 
 **7. Let's say we want to multiply `pi` by 2. Using the same arithmetic principles that we just learned, write a code chunk that performs this operation using the object we created.**  
+
+
+```r
+pi * 2
+```
+
+```
+## [1] 6.283185
+```
+
 
 **8. In order to get help with any command in R, just type a `?` in front the command of interest. Practice this by running the following code chunk.**  
 
@@ -44,6 +94,24 @@ pi <- 3.14159265359
 ```r
 x <- c(2, 8, 6, 6, 7, 4, 9, 9, 9, 10)
 ```
+
+
+```r
+mean (x)
+```
+
+```
+## [1] 7
+```
+
+```r
+median (x)
+```
+
+```
+## [1] 7.5
+```
+
 
 **10. Repeat the procedure above, but this time calculate the median.**  
 
