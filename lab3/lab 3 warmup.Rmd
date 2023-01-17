@@ -1,0 +1,46 @@
+---
+title: "Lab 3 Warmup"
+output: html_document
+date: "2023-01-17"
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+
+### 1. Plant Height Vector
+```{r}
+plant_height <- c(30.7, 37.6, 28.4, NA, 33.2)
+```
+
+### 2. Plant Weight Vector
+```{r}
+plant_weight <- c(4, 5.2, 3.7, NA, 4.6)
+```
+
+### 3. Labels for data matrix
+```{r}
+samples <- c("plant1", "plant2", "plant3", "plant4", "plant5")
+measured <-c("height", "weight") 
+```
+
+### 4. 
+```{r}
+plant_experiment <-c(plant_height, plant_weight)
+plant_experiment
+```
+
+
+### 5. Build the data matrix
+```{r}
+plant_experiment_matrix <- matrix(plant_experiment)
+plant_experiment_matrix
+```
+
+### 6. Name the columns and rows
+```{r}
+colnames(plant_experiment_matrix)<-measured
+rownames(plant_experiment_matrix)
+```
+
