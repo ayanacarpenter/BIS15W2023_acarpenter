@@ -158,9 +158,7 @@ There are NAs. When I take an average of max. life, I get a negative number beca
 ```{r}
 anyNA(mammals)
 ```
-```{r}
 
-```
 
 ```{r}
 mean(mammals$`max. life`)
