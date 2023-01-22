@@ -254,6 +254,17 @@ taxa <- select(homerange, "taxon", "common.name", "class", "order", "family", "s
 
 **5. The variable `taxon` identifies the large, common name groups of the species represented in `homerange`. Make a table the shows the counts for each of these `taxon`.** 
 
+```r
+table(homerange$taxon)
+```
+
+```
+## 
+##         birds   lake fishes       lizards       mammals marine fishes 
+##           140             9            11           238            90 
+##  river fishes        snakes     tortoises       turtles 
+##            14            41            12            14
+```
 
 **6. The species in `homerange` are also classified into trophic guilds. How many species are represented in each trophic guild.**  
 carnivore=342 herbivore=227
