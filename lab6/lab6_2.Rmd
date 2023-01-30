@@ -2,7 +2,7 @@
 title: "summarize practice, `count()`, `across()`"
 date: "`r Sys.Date()`"
 output:
-  html_document:
+  html_document: 
     theme: spacelab
     toc: yes
     toc_float: yes
@@ -37,8 +37,11 @@ penguins %>%
 ```
 
 Why do we have NA here? Do all of these penguins lack data?
+You get NA because some penguins did not have data collected from them and those penguins can't be calculated into the average. 
 ```{r}
-
+penguins %>% 
+  group_by(island) %>% 
+  summarize(mean_body_mass=mean(body_mass_g))
 ```
 
 Well, that won't work so let's remove the NAs and recalculate.
@@ -56,7 +59,10 @@ names(penguins)
 ```
 
 ```{r}
-
+penguins %>% 
+  select(species, island) %>% 
+  group_by(island) %>% 
+  summarize(species=n())
 ```
 
 ## Counts
@@ -97,17 +103,52 @@ penguins %>%
 ## Practice
 1. Produce a summary of the mean for bill_length_mm, bill_depth_mm, flipper_length_mm, and body_mass_g within Adelie penguins only. Be sure to provide the number of samples.
 ```{r}
-
+penguins %>% 
+  select(island, species, bill_length_mm, bill_depth_mm, flipper_length_mm, body_mass_g) %>% 
+  group_by(island) %>% 
+  filter(species=="Adelie") %>% 
+  summarize(mean_body_mass=mean(body_mass_g, na.rm=T), 
+            mean_bill_length=mean(bill_length_mm, na.rm=T), 
+            mean_bill_depth=mean(bill_depth_mm, na.rm=T),
+            mean_flipper_length=mean(flipper_length_mm, na.rm=T), 
+            total=n())
 ```
 
 2. How does the mean of `bill_length_mm` compare between penguin species?
+I'm going to summarize data for the other two species like I did for the Adelie penguin above. 
+The Chinstrap and Gentoo penguins have similar average bill lengths around 47-48mm. The Adelie penguin's bill is about 38mm, on average shorter than the Chinstrap and the Gentoo. 
 ```{r}
-
+penguins %>% 
+  select(island, species, bill_length_mm, bill_depth_mm, flipper_length_mm, body_mass_g) %>% 
+  group_by(island) %>% 
+  filter(species=="Chinstrap") %>% 
+  summarize(mean_body_mass=mean(body_mass_g, na.rm=T), 
+            mean_bill_length=mean(bill_length_mm, na.rm=T), 
+            mean_bill_depth=mean(bill_depth_mm, na.rm=T),
+            mean_flipper_length=mean(flipper_length_mm, na.rm=T), 
+            total=n())
 ```
 
-3. For some penguins, their sex is listed as NA. Where do these penguins occur?
 ```{r}
+penguins %>% 
+  select(island, species, bill_length_mm, bill_depth_mm, flipper_length_mm, body_mass_g) %>% 
+  group_by(island) %>% 
+  filter(species=="Gentoo") %>% 
+  summarize(mean_body_mass=mean(body_mass_g, na.rm=T), 
+            mean_bill_length=mean(bill_length_mm, na.rm=T), 
+            mean_bill_depth=mean(bill_depth_mm, na.rm=T),
+            mean_flipper_length=mean(flipper_length_mm, na.rm=T), 
+            total=n())
+```
+3. For some penguins, their sex is listed as NA. Where do these penguins occur?
+These penguins occur in all three islands, Biscoe, Torgensen and Dream. Dream only has one penguin listed as NA 
+```{r}
+names(penguins)
+```
 
+```{r}
+penguins %>% 
+  tabyl(island, sex)
 ```
 
 ## `across()`
@@ -167,8 +208,32 @@ penguins %>%
 1. Produce separate summaries of the mean and standard deviation for bill_length_mm, bill_depth_mm, and flipper_length_mm for each penguin species. Be sure to provide the number of samples.  
 mean
 ```{r}
-
+penguins %>% 
+  select(island, species, bill_length_mm, bill_depth_mm, flipper_length_mm) %>% 
+  summarize(mean_bill_length=mean(bill_length_mm, na.rm=T), 
+            sd_bill_length=sd(bill_length_mm, na.rm=T), 
+            mean_bill_depth=mean(bill_depth_mm, na.rm=T), 
+            sd_bill_depth=sd(bill_depth_mm, na.rm=T),
+            mean_flipper_length=mean(flipper_length_mm, na.rm=T), 
+            sd_flipper_length=sd(flipper_length_mm, na.rm=T),
+            total=n())
 ```
+```{r}
+names(penguins)
+```
+
+
+```{r}
+penguins %>%
+  summarize(across(!c(species, island, sex, year, body_mass_g), 
+                   mean, na.rm=T), total=n())
+```
+```{r}
+penguins %>%
+  summarize(across(!c(species, island, sex, year, body_mass_g), 
+                   sd, na.rm=T), total=n())
+```
+
 
 ## Wrap-up  
 
