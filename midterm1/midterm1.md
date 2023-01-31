@@ -178,6 +178,36 @@ ecosphere %>%
 ##      Trogoniformes   1 0.001814882
 ```
 
+```r
+ecosphere %>% 
+  count(order)
+```
+
+```
+## # A tibble: 19 × 2
+##    order                 n
+##    <chr>             <int>
+##  1 Anseriformes         44
+##  2 Apodiformes          15
+##  3 Caprimulgiformes      5
+##  4 Charadriiformes      81
+##  5 Ciconiiformes        29
+##  6 Columbiformes        11
+##  7 Coraciiformes         3
+##  8 Cuculiformes          3
+##  9 Falconiformes        31
+## 10 Galliformes          21
+## 11 Gaviiformes           4
+## 12 Gruiformes           12
+## 13 Passeriformes       237
+## 14 Piciformes           22
+## 15 Podicipediformes      6
+## 16 Procellariiformes     4
+## 17 Psittaciformes        6
+## 18 Strigiformes         16
+## 19 Trogoniformes         1
+```
+
 Problem 4. (2 points) Which habitat has the highest diversity (number of species) in the data?
 The woodland habitat has the highest diversity in the data.
 
@@ -231,8 +261,6 @@ various_diversity <- ecosphere %>%
 
 
 
-
-
 Run the code below to learn about the `slice` function. Look specifically at the examples (at the bottom) for `slice_max()` and `slice_min()`. If you are still unsure, try looking up examples online (https://rpubs.com/techanswers88/dplyr-slice). Use this new function to answer question 5 below.
 
 ```r
@@ -282,6 +310,7 @@ ducks <- ducks %>%
 ```
 
 Problem 7. (2 points) We might assume that all ducks live in wetland habitat. Is this true for the ducks in these data? If there are exceptions, list the species below.
+There is one species that lives in the habitat ocean and it is the Common elder or the Somateria mollissima.
 
 ```r
 ducks %>% 
@@ -315,20 +344,144 @@ ducks %>%
 
 Problem 8. (4 points) In ducks, how is mean body mass associated with migratory strategy? Do the ducks that migrate long distances have high or low average body mass?
 
+The ducks that migrate long distances have a low average body mass. 
+
+```r
+ducks %>% 
+  group_by(migratory_strategy) %>% 
+  summarize(average_mass=mean(log10_mass)) %>% 
+  arrange(desc(average_mass))
+```
+
+```
+## # A tibble: 5 × 2
+##   migratory_strategy average_mass
+##   <chr>                     <dbl>
+## 1 Resident                   4.03
+## 2 Moderate                   3.11
+## 3 Short                      2.98
+## 4 Withdrawal                 2.92
+## 5 Long                       2.87
+```
 
 Problem 9. (2 points) Accipitridae is the family that includes eagles, hawks, kites, and osprey. First, make a new object `eagles` that only includes species in the family Accipitridae. Next, restrict these data to only include the variables common_name, scientific_name, and population_size.
 
+```r
+eagles <- ecosphere %>% 
+  filter(family=="Accipitridae")
+```
+
+```r
+eagles <- eagles %>% 
+  select(common_name, scientific_name, population_size)
+```
 
 Problem 10. (4 points) In the eagles data, any species with a population size less than 250,000 individuals is threatened. Make a new column `conservation_status` that shows whether or not a species is threatened.
 
+```r
+eagles %>% 
+  mutate(conservation_status=ifelse(population_size<250000, "threatened", "safe"))
+```
 
-Problem 11. (2 points) Consider the results from questions 9 and 10. Are there any species for which their threatened status needs further study? How do you know?
+```
+## # A tibble: 20 × 4
+##    common_name         scientific_name          population_size conservation_s…¹
+##    <chr>               <chr>                              <dbl> <chr>           
+##  1 Bald Eagle          Haliaeetus leucocephalus              NA <NA>            
+##  2 Broad-winged Hawk   Buteo platypterus                1700000 safe            
+##  3 Cooper's Hawk       Accipiter cooperii                700000 safe            
+##  4 Ferruginous Hawk    Buteo regalis                      80000 threatened      
+##  5 Golden Eagle        Aquila chrysaetos                 130000 threatened      
+##  6 Gray Hawk           Buteo nitidus                         NA <NA>            
+##  7 Harris's Hawk       Parabuteo unicinctus               50000 threatened      
+##  8 Hook-billed Kite    Chondrohierax uncinatus               NA <NA>            
+##  9 Northern Goshawk    Accipiter gentilis                200000 threatened      
+## 10 Northern Harrier    Circus cyaneus                    700000 safe            
+## 11 Red-shouldered Hawk Buteo lineatus                   1100000 safe            
+## 12 Red-tailed Hawk     Buteo jamaicensis                2000000 safe            
+## 13 Rough-legged Hawk   Buteo lagopus                     300000 safe            
+## 14 Sharp-shinned Hawk  Accipiter striatus                500000 safe            
+## 15 Short-tailed Hawk   Buteo brachyurus                      NA <NA>            
+## 16 Snail Kite          Rostrhamus sociabilis                 NA <NA>            
+## 17 Swainson's Hawk     Buteo swainsoni                   540000 safe            
+## 18 White-tailed Hawk   Buteo albicaudatus                    NA <NA>            
+## 19 White-tailed Kite   Elanus leucurus                       NA <NA>            
+## 20 Zone-tailed Hawk    Buteo albonotatus                     NA <NA>            
+## # … with abbreviated variable name ¹​conservation_status
+```
 
+Problem 11. (2 points) Consider the results from questions 9 and 10. Are there any species for which their threatened status needs further study? How do you know? 
+The Bald Eagle, Gray Hawk, Hook-billed Kite, Short-tailed Hawk, Snail Kite, White-tailed Hawk, White-tailed Kite, and Zone-tailed Hawk need further study because their conservation status is NA. 
+
+
+```r
+eagles %>% 
+  mutate(conservation_status=ifelse(population_size<250000, "threatened", "safe")) %>% 
+  arrange(desc(conservation_status))
+```
+
+```
+## # A tibble: 20 × 4
+##    common_name         scientific_name          population_size conservation_s…¹
+##    <chr>               <chr>                              <dbl> <chr>           
+##  1 Ferruginous Hawk    Buteo regalis                      80000 threatened      
+##  2 Golden Eagle        Aquila chrysaetos                 130000 threatened      
+##  3 Harris's Hawk       Parabuteo unicinctus               50000 threatened      
+##  4 Northern Goshawk    Accipiter gentilis                200000 threatened      
+##  5 Broad-winged Hawk   Buteo platypterus                1700000 safe            
+##  6 Cooper's Hawk       Accipiter cooperii                700000 safe            
+##  7 Northern Harrier    Circus cyaneus                    700000 safe            
+##  8 Red-shouldered Hawk Buteo lineatus                   1100000 safe            
+##  9 Red-tailed Hawk     Buteo jamaicensis                2000000 safe            
+## 10 Rough-legged Hawk   Buteo lagopus                     300000 safe            
+## 11 Sharp-shinned Hawk  Accipiter striatus                500000 safe            
+## 12 Swainson's Hawk     Buteo swainsoni                   540000 safe            
+## 13 Bald Eagle          Haliaeetus leucocephalus              NA <NA>            
+## 14 Gray Hawk           Buteo nitidus                         NA <NA>            
+## 15 Hook-billed Kite    Chondrohierax uncinatus               NA <NA>            
+## 16 Short-tailed Hawk   Buteo brachyurus                      NA <NA>            
+## 17 Snail Kite          Rostrhamus sociabilis                 NA <NA>            
+## 18 White-tailed Hawk   Buteo albicaudatus                    NA <NA>            
+## 19 White-tailed Kite   Elanus leucurus                       NA <NA>            
+## 20 Zone-tailed Hawk    Buteo albonotatus                     NA <NA>            
+## # … with abbreviated variable name ¹​conservation_status
+```
 
 Problem 12. (4 points) Use the `ecosphere` data to perform one exploratory analysis of your choice. The analysis must have a minimum of three lines and two functions. You must also clearly state the question you are attempting to answer.
 
+Which habitat has the highest number of species with long life expectancies? 
+The Wetland has the highest number of species with long life expectancies n=20. If you want to live long, move to the wetland.
+
+```r
+long_lifespan <- ecosphere %>% 
+  select(habitat, life_expectancy, common_name, scientific_name) %>% 
+  filter(life_expectancy=="Long") %>% 
+  group_by(habitat) %>% 
+  summarize(common_name, scientific_name)
+```
+
+```
+## `summarise()` has grouped output by 'habitat'. You can override using the
+## `.groups` argument.
+```
+
+```r
+long_lifespan %>% 
+  tabyl(habitat)
+```
+
+```
+##    habitat  n    percent
+##  Grassland  1 0.02127660
+##      Ocean 18 0.38297872
+##  Shrubland  1 0.02127660
+##    Various  4 0.08510638
+##    Wetland 20 0.42553191
+##   Woodland  3 0.06382979
+```
 
 Please provide the names of the students you have worked with with during the exam:
+Dominic De Quattra, Sidney Rang
 
 
 Please be 100% sure your exam is saved, knitted, and pushed to your github repository. No need to submit a link on canvas, we will find your exam in your repository.

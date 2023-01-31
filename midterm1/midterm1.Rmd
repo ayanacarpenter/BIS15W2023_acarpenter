@@ -51,6 +51,10 @@ There are 19 distinct orders of birds represented in the data.
 ecosphere %>% 
   tabyl(order)
 ```
+```{r}
+ecosphere %>% 
+  count(order)
+```
 
 Problem 4. (2 points) Which habitat has the highest diversity (number of species) in the data?
 The woodland habitat has the highest diversity in the data.
@@ -84,13 +88,7 @@ various_diversity <- ecosphere %>%
   filter(habitat=="Various")
 ```
 
-```{r}
 
-```
-
-```{r}
-
-```
 
 
 Run the code below to learn about the `slice` function. Look specifically at the examples (at the bottom) for `slice_max()` and `slice_min()`. If you are still unsure, try looking up examples online (https://rpubs.com/techanswers88/dplyr-slice). Use this new function to answer question 5 below.
@@ -123,6 +121,7 @@ ducks <- ducks %>%
 ```
 
 Problem 7. (2 points) We might assume that all ducks live in wetland habitat. Is this true for the ducks in these data? If there are exceptions, list the species below.
+There is one species that lives in the habitat ocean and it is the Common elder or the Somateria mollissima.
 ```{r}
 ducks %>% 
   select(habitat, common_name, scientific_name) %>% 
@@ -131,33 +130,58 @@ ducks %>%
 ```
 
 Problem 8. (4 points) In ducks, how is mean body mass associated with migratory strategy? Do the ducks that migrate long distances have high or low average body mass?
-```{r}
 
+The ducks that migrate long distances have a low average body mass. 
+```{r}
+ducks %>% 
+  group_by(migratory_strategy) %>% 
+  summarize(average_mass=mean(log10_mass)) %>% 
+  arrange(desc(average_mass))
 ```
 
 Problem 9. (2 points) Accipitridae is the family that includes eagles, hawks, kites, and osprey. First, make a new object `eagles` that only includes species in the family Accipitridae. Next, restrict these data to only include the variables common_name, scientific_name, and population_size.
 ```{r}
-
+eagles <- ecosphere %>% 
+  filter(family=="Accipitridae")
+```
+```{r}
+eagles <- eagles %>% 
+  select(common_name, scientific_name, population_size)
 ```
 
 Problem 10. (4 points) In the eagles data, any species with a population size less than 250,000 individuals is threatened. Make a new column `conservation_status` that shows whether or not a species is threatened.
 ```{r}
-
+eagles %>% 
+  mutate(conservation_status=ifelse(population_size<250000, "threatened", "safe"))
 ```
 
-Problem 11. (2 points) Consider the results from questions 9 and 10. Are there any species for which their threatened status needs further study? How do you know?
-```{r}
+Problem 11. (2 points) Consider the results from questions 9 and 10. Are there any species for which their threatened status needs further study? How do you know? 
+The Bald Eagle, Gray Hawk, Hook-billed Kite, Short-tailed Hawk, Snail Kite, White-tailed Hawk, White-tailed Kite, and Zone-tailed Hawk need further study because their conservation status is NA. 
 
+```{r}
+eagles %>% 
+  mutate(conservation_status=ifelse(population_size<250000, "threatened", "safe")) %>% 
+  arrange(desc(conservation_status))
 ```
 
 Problem 12. (4 points) Use the `ecosphere` data to perform one exploratory analysis of your choice. The analysis must have a minimum of three lines and two functions. You must also clearly state the question you are attempting to answer.
-```{r}
 
+Which habitat has the highest number of species with long life expectancies? 
+The Wetland has the highest number of species with long life expectancies n=20. If you want to live long, move to the wetland.
+```{r}
+long_lifespan <- ecosphere %>% 
+  select(habitat, life_expectancy, common_name, scientific_name) %>% 
+  filter(life_expectancy=="Long") %>% 
+  group_by(habitat) %>% 
+  summarize(common_name, scientific_name)
+```
+```{r}
+long_lifespan %>% 
+  tabyl(habitat)
 ```
 
 Please provide the names of the students you have worked with with during the exam:
-```{r}
+Dominic De Quattra, Sidney Rang
 
-```
 
 Please be 100% sure your exam is saved, knitted, and pushed to your github repository. No need to submit a link on canvas, we will find your exam in your repository.
