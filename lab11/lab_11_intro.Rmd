@@ -1,0 +1,64 @@
+---
+title: "Lab 11 Intro"
+date: "`r Sys.Date()`"
+output: ioslides_presentation
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = FALSE)
+library("jpeg")
+```
+
+## Seating & Set-up
+1. Please make sure that you sit next to your group members for the rest of the quarter.
+2. Please set-up your computer as normal.
+
+## Warm-up
+
+```{r}
+library(tidyverse)
+library(janitor)
+library(here)
+library(naniar)
+```
+
+
+For this warm-up, please use the `heartrate` data. Be sure to label your plots!
+
+```{r}
+heartrate <- readr::read_csv("data/heartrate.csv")
+```
+
+1. Make a plot that compares the heartrate of patients for drug a.
+
+```{r}
+heartrate_new <- heartrate %>% 
+  pivot_longer(-patient, #patient will not pivot
+               names_to = "drug", 
+               values_to = "heartrate"
+               )
+```
+```{r}
+heartrate_new %>% 
+  select(patient, drug, heartrate) %>% 
+  filter(drug=="a") %>% 
+  ggplot(aes(x=patient, y=heartrate, fill = patient)) + geom_col() + 
+  labs(title = "Patient Heartrate Response to Drug A", 
+       x = "Patient", 
+       y = "Heartrate")
+```
+
+
+2. Make a plot that compares heartrate (as a range) for each drug.
+
+```{r}
+heartrate_new %>% 
+  select(patient, drug, heartrate) %>% 
+  ggplot(aes(x = drug, y = heartrate, fill = drug)) + geom_boxplot() + 
+  labs(title = "Heartrate across different drugs", 
+       x = "Drug", 
+       y = "Heartrate")
+```
+
+
+
