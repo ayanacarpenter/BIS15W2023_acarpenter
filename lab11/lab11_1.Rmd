@@ -239,6 +239,14 @@ homerange_new <- homerange%>%
 homerange
 ```
 
+```{r}
+homerange_new %>% 
+  ggplot(aes(x=range_category, fill=class)) + geom_bar()
+```
+
+
+
+
 3. Isolate the small `range_category` and plot the range of `log10.mass` by taxonomic class.
 ```{r}
 homerange_new %>% 
