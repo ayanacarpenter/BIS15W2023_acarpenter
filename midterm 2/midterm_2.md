@@ -143,13 +143,21 @@ mean_f <- surgery %>%
   mutate(mean_f_age = mean(age, na.rm = T))
 ```
 
-
-
-
-
-
-
 4. (3 points) Make a plot that shows the range of age associated with gender.
+
+
+```r
+surgery %>% 
+  select(age, gender) %>% 
+  ggplot(aes(x = age, fill = gender)) + geom_boxplot()
+```
+
+```
+## Warning: Removed 2 rows containing non-finite values (`stat_boxplot()`).
+```
+
+![](midterm_2_files/figure-html/unnamed-chunk-9-1.png)<!-- -->
+
 
 5. (2 points) How healthy are the participants? The variable `asa_status` is an evaluation of patient physical status prior to surgery. Lower numbers indicate fewer comorbidities (presence of two or more diseases or medical conditions in a patient). Make a plot that compares the number of `asa_status` I-II, III, and IV-V.
 
@@ -171,27 +179,16 @@ surgery %>%
 
 ```r
 surgery %>%
- summarize(asa_status, bmi) 
+ ggplot(aes(x = bmi)) + geom_density() + facet_wrap(~asa_status, ncol = 2) + labs( title = "Body Mass Across ASA Status",
+                                                                                   x = "BMI",
+                                                                                   y = "Density")
 ```
 
 ```
-## # A tibble: 32,001 × 2
-##    asa_status   bmi
-##    <chr>      <dbl>
-##  1 I-II        28.0
-##  2 I-II        37.8
-##  3 I-II        19.6
-##  4 III         32.2
-##  5 I-II        24.3
-##  6 I-II        40.3
-##  7 IV-VI       64.6
-##  8 III         43.2
-##  9 III         28.0
-## 10 I-II        27.4
-## # … with 31,991 more rows
+## Warning: Removed 3290 rows containing non-finite values (`stat_density()`).
 ```
 
-
+![](midterm_2_files/figure-html/unnamed-chunk-11-1.png)<!-- -->
 
 
 The variable `ccsmort30rate` is a measure of the overall 30-day mortality rate associated with each type of operation. The variable `ccscomplicationrate` is a measure of the 30-day in-hospital complication rate. The variable `ahrq_ccs` lists each type of operation. 
@@ -200,22 +197,68 @@ The variable `ccsmort30rate` is a measure of the overall 30-day mortality rate a
 
 
 ```r
-mortality_surgery <- surgery %>% 
-  select(ahrq_ccs, ccsmort30rate) %>%
+surgery %>% 
   group_by(ahrq_ccs) %>% 
-  arrange(desc(ccsmort30rate))
+  summarize(mortality_mean = mean(mortality_rsi)) %>% 
+  top_n(5, mortality_mean) %>% 
+  arrange(desc(mortality_mean))
+```
+
+```
+## # A tibble: 5 × 2
+##   ahrq_ccs                               mortality_mean
+##   <chr>                                           <dbl>
+## 1 Gastrectomy; partial and total                 0.533 
+## 2 Small bowel resection                          0.398 
+## 3 Colorectal resection                           0.114 
+## 4 Oophorectomy; unilateral and bilateral         0.0235
+## 5 Other hernia repair                           -0.0224
 ```
 
 
+```r
+surgery %>% 
+  group_by(ahrq_ccs) %>% 
+  summarize(complication_mean = mean(complication_rsi)) %>% 
+  top_n(5, complication_mean) %>% 
+  arrange(desc(complication_mean))
+```
 
+```
+## # A tibble: 5 × 2
+##   ahrq_ccs                               complication_mean
+##   <chr>                                              <dbl>
+## 1 Small bowel resection                             0.686 
+## 2 Colorectal resection                              0.275 
+## 3 Nephrectomy; partial or complete                 -0.0212
+## 4 Oophorectomy; unilateral and bilateral           -0.0455
+## 5 Gastrectomy; partial and total                   -0.0605
+```
 
 
 8. (3 points) Make a plot that compares the `ccsmort30rate` for all listed `ahrq_ccs` procedures.
+
+
+```r
+surgery %>% 
+  ggplot(aes(x = ahrq_ccs , y = ccsmort30rate)) + geom_col() + labs( title = "30 Day Mortality Rate", x= "Operation", y = "Mortality Rate") 
+```
+
+![](midterm_2_files/figure-html/unnamed-chunk-14-1.png)<!-- -->
+
 
 9. (4 points) When is the best month to have surgery? Make a chart that shows the 30-day mortality and complications for the patients by month. `mort30` is the variable that shows whether or not a patient survived 30 days post-operation.
 
 10. (4 points) Make a plot that visualizes the chart from question #9. Make sure that the months are on the x-axis. Do a search online and figure out how to order the months Jan-Dec.
 
+
+
+
+
 Please provide the names of the students you have worked with with during the exam:
+
+Sydney Rang 
+Dominic De Quattra
+
 
 Please be 100% sure your exam is saved, knitted, and pushed to your github repository. No need to submit a link on canvas, we will find your exam in your repository.
