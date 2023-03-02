@@ -285,6 +285,8 @@ Whew! We made it! We created a nice looking app with `shinydashboard`. And now w
 Let's try to build an app that allows users to explore sexual composition of wolf packs by `pop`. These data are from: Brandell, Ellen E (2021), Serological dataset and R code for: Patterns and processes of pathogen exposure in gray wolves across North America, Dryad, [Dataset](https://doi.org/10.5061/dryad.5hqbzkh51)  
 
 1. Start by loading and exploring the data.
+
+1. Start by loading and exploring the data.
 ```{r}
 wolves <- read_csv("data/wolves_data/wolves_dataset.csv")
 ```
@@ -301,6 +303,34 @@ wolves %>%
   geom_bar()+
   facet_wrap(~pop)
 ```
+
+```{r}
+library(shiny)
+
+ui <- dashboardPage(
+  dashboardHeader(title = "Wolves: Sex By Population"),
+  dashboardSidebar(disable=T),
+  dashboardBody(
+  selectInput("x", "Choose Population", choices = c("AK.PEN", "BAN.JAS", "BC", "DENALI", "ELLES", "GTNP", "INT.AK", "MEXICAN", "MI", "MT", "N.NWT", "ONT", "SE.AK", "SNF", "SS.NWT", "YNP", "YUCH"), 
+              selected = "AK_PEN"), 
+  plotOutput("plot", width = "500px", height = "500px"))
+)
+
+server <- function(input, output, session) {
+  output$plot <- renderPlot({
+  wolves %>% 
+      filter(pop==input$x) %>% 
+      filter(sex!="NA") %>% 
+      ggplot(aes(x=sex, fill=sex))+
+  geom_bar() + 
+      theme_dark(base_size = 18)
+      
+  })
+}
+
+shinyApp(ui, server)
+```
+
 
 ## Wrap-up  
 Please review the learning goals and be sure to use the code here as a reference when completing the homework.
